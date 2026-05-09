@@ -1,0 +1,399 @@
+/* =========================================================
+   GLOBAL APPLICATION STYLES
+========================================================= */
+
+.stApp {
+  background-color: #f5f6fc;
+  font-family: "Segoe UI", sans-serif;
+  color: #1e1e2f;
+}
+
+/* =========================================================
+   GLOBAL TEXT
+========================================================= */
+
+html,
+body,
+[class*="css"] {
+  color: #222222;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #1e1e2f;
+  font-weight: 700;
+}
+
+p,
+label,
+span,
+div {
+  color: #444444;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+/* Hide Streamlit default pages title */
+/* Hide only Streamlit Pages title */
+[data-testid="stSidebarCollapseButton"],
+button[kind="headerNoPadding"] {
+  color: red;
+}
+[data-testid="stSidebarNav"] {
+  display: none;
+}
+[data-testid="stIconMaterial"] {
+  background-color: #555;
+  border-radius: 30%;
+}
+/* radio butons on uploadpage */
+[role="radiogroup"] {
+  display: flex;
+  flex-direction: row;
+}
+[aria-label="Paste Notes Here"] {
+  background-color: #ffffff;
+  color: #555;
+}
+[data-testid="stSidebar"] {
+  background-color: #ffffff;
+  border-right: 1px solid #ececec;
+  padding-top: 20px;
+}
+
+/* Sidebar Logo */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding-left: 10px;
+}
+
+.logo-section h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #16162e;
+  line-height: 1.2;
+}
+
+/* Sidebar Links */
+
+[data-testid="stSidebar"] a {
+  background-color: transparent;
+  color: #555 !important;
+  padding: 14px 18px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: 0.3s ease;
+  text-decoration: none;
+}
+
+[data-testid="stSidebar"] a:hover {
+  background-color: #f3f0ff;
+  color: red !important;
+}
+
+[data-testid="stSidebar"] a[aria-current="page"] {
+  background-color: #f1efff;
+  color: #6c63ff !important;
+  font-weight: 700;
+}
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.menu-icon {
+  font-size: 34px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.profile-section img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+/* =========================================================
+   TITLES & HEADINGS
+========================================================= */
+
+.main-title {
+  font-size: 56px;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: #111827;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: #666;
+  margin-bottom: 35px;
+}
+
+/* =========================================================
+   METRIC CARDS
+========================================================= */
+
+.metric-card {
+  background: white;
+  border-radius: 22px;
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 25px;
+  transition: all 0.3s ease;
+  border: 1px solid #ececec;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.metric-icon {
+  width: 75px;
+  height: 75px;
+  background: #f3f0ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+}
+
+.metric-card h2 {
+  font-size: 42px;
+  margin: 0;
+  font-weight: 700;
+  color: #111827;
+}
+
+.metric-card p {
+  font-size: 3vh;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* =========================================================
+   CONTENT BOXES
+========================================================= */
+
+.content-box {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  margin-bottom: 20px;
+  border-left: 5px solid #6c63ff;
+}
+
+/* =========================================================
+   RECENT ACTIVITY SECTION
+========================================================= */
+
+.activity-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  min-height: 420px;
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.activity-header h3 {
+  font-size: 30px;
+  color: #111827;
+}
+
+.activity-header button {
+  background: #f3f0ff;
+  border: none;
+  color: #6c63ff;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 17px;
+}
+
+.activity-item small {
+  color: #999;
+}
+
+/* =========================================================
+   QUICK START SECTION
+========================================================= */
+
+.quick-card {
+  background: linear-gradient(135deg, #5f5bff, #6c63ff, #7b68ee);
+  border-radius: 24px;
+  padding: 35px;
+  min-height: 420px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  box-shadow: 0 10px 30px rgba(108, 99, 255, 0.25);
+}
+
+.quick-content h2 {
+  font-size: 44px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.quick-content p {
+  font-size: 20px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 35px;
+}
+
+.quick-content button {
+  background: white;
+  color: #6c63ff;
+  border: none;
+  padding: 18px 34px;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.quick-image img {
+  width: 220px;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.stButton > button {
+  background: linear-gradient(90deg, #6c63ff, #7b68ee);
+  color: white !important;
+  border-radius: 10px;
+  border: none;
+  height: 45px;
+  width: 100%;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.stButton > button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.4);
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.stTextInput input,
+.stNumberInput input,
+textarea {
+  border-radius: 10px !important;
+  border: 1px solid #dcdcdc !important;
+  padding: 10px !important;
+}
+
+/* =========================================================
+   SELECT BOXES
+========================================================= */
+
+div[data-baseweb="select"] {
+  border-radius: 10px !important;
+}
+
+/* =========================================================
+   DATAFRAMES / TABLES
+========================================================= */
+
+[data-testid="stDataFrame"] {
+  background-color: white;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+/* =========================================================
+   METRIC CONTAINERS
+========================================================= */
+
+div[data-testid="metric-container"] {
+  background-color: white;
+  border-radius: 16px;
+  padding: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  border: 1px solid #ececec;
+}
+
+/* =========================================================
+   FILE UPLOADER
+========================================================= */
+
+[data-testid="stFileUploader"] {
+  background-color: white;
+  padding: 20px;
+  border-radius: 14px;
+  border: 2px dashed #cfcfff;
+}
+
+/* =========================================================
+   STREAMLIT LAYOUT FIXES
+========================================================= */
+
+.block-container {
+  padding-top: 2rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+section[data-testid="stSidebar"] div.block-container {
+  padding-top: 2rem;
+}
+
+/* exam page exam questions */
+
+[class="stHorizontalBlock st-emotion-cache-1permvm e12zf7d53"] {
+  display: flex;
+  flex-direction: row;
+  padding-top: 20px;
+}
+
+.st-emotion-cache-19ysvjp {
+  width: auto;
+}
