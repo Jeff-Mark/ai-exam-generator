@@ -28,3 +28,7 @@ def show_sidebar():
         "pages/login.py",
         label="🚪 Logout"
     )
+    st.sidebar.page_link(
+        "pages/registration.py",
+        label="🚪 Registration"
+    )

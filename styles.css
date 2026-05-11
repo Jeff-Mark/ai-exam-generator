@@ -397,3 +397,100 @@ section[data-testid="stSidebar"] div.block-container {
 .st-emotion-cache-19ysvjp {
   width: auto;
 }
+/* ----- registration -------- */
+/* =========================================
+   REGISTRATION PAGE
+========================================= */
+
+.register-container {
+  margin-top: 40px;
+  padding-right: 50px;
+}
+
+.logo-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.logo-box img {
+  width: 70px;
+}
+
+.logo-box h1 {
+  font-size: 38px;
+  color: #111827;
+  margin: 0;
+}
+
+.register-container h2 {
+  font-size: 42px;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 18px;
+  margin-bottom: 35px;
+}
+
+/* Inputs */
+.stTextInput input {
+  height: 50px;
+  border-radius: 12px !important;
+  border: 1px solid #dcdcdc !important;
+  padding-left: 15px !important;
+  font-size: 16px;
+}
+
+.stSelectbox > div > div {
+  border-radius: 12px !important;
+}
+
+/* Button */
+.stButton > button {
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(90deg, #6c63ff, #7b68ee);
+
+  color: white !important;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.stButton > button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(108, 99, 255, 0.35);
+}
+
+/* Right Side Image */
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh;
+}
+
+.image-container img {
+  width: 85%;
+  max-width: 500px;
+}
+
+/* Login Link */
+.login-link {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 15px;
+  color: #666;
+}
+
+.login-link a {
+  color: #6c63ff;
+  text-decoration: none;
+  font-weight: 600;
+}

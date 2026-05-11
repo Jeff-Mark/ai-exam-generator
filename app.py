@@ -1,7 +1,14 @@
+# https://ai-exam-generator-baufvky4fcevfrrzoatusc.streamlit.app/generated_questions
 import streamlit as st
 from pathlib import Path
 from utils.sidebar import show_sidebar
+from db import run_query, execute_query
 
+# ------------------RUN SQL---------------------
+user = run_query("SELECT * FROM public.users WHERE user_id = 2")[0]
+notes = run_query("SELECT * FROM public.notes where user_id = 2")
+
+username = user["username"]
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
     page_title="Dashboard",
@@ -25,20 +32,20 @@ with top1:
     st.markdown("<div class='menu-icon'>☰</div>", unsafe_allow_html=True)
 
 with top2:
-    st.markdown("""
+    st.markdown(f"""
     <div class='profile-section'>
         🔔
         <img src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'>
-        <span>John Doe</span>
+        <span>{username}</span>
     </div>
     """, unsafe_allow_html=True)
 
 # ---------------- TITLE ----------------
 st.markdown("<h1 class='main-title'>Dashboard</h1>", unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
 <p class='subtitle'>
-Welcome back, John! Here's what's happening with your exams.
+Welcome back, {username}! Here's what's happening with your exams.
 </p>
 """, unsafe_allow_html=True)
 
@@ -72,33 +79,30 @@ for col, card in zip(cols, cards):
 left, right = st.columns([1.1, 1])
 
 # -------- RECENT ACTIVITIES --------
+activity_html = ""
+
+for note in notes:
+
+    activity_html += f"""
+    <div class='activity-item'>
+        <span>📕{note["unit_name"]}_{note["original_name"]} uploaded</span>
+        <small>
+            {note["uploaded_at"].strftime("%d %b %Y, %I:%M %p")}
+        </small>
+    </div>
+    """
 with left:
-    st.markdown("""
+
+    st.markdown(f"""
     <div class='activity-card'>
+
     <div class='activity-header'>
     <h3>Recent Activity</h3>
     <button>View All</button>
     </div>
 
-    <div class='activity-item'>
-    <span>📕 Data Structures Notes.pdf uploaded</span>
-    <small>2 hours ago</small>
-    </div>
+    {activity_html}
 
-    <div class='activity-item'>
-    <span>📙 Operating Systems Notes.txt uploaded</span>
-    <small>1 day ago</small>
-    </div>
-
-    <div class='activity-item'>
-    <span>📘 Machine Learning Exam generated</span>
-    <small>2 days ago</small>
-    </div>
-
-    <div class='activity-item'>
-    <span>📗 AI Fundamentals Exam downloaded</span>
-    <small>3 days ago</small>
-    </div>
     </div>
     """, unsafe_allow_html=True)
 
