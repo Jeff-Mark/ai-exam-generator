@@ -34,5 +34,4 @@ def upload_file(file_name, file_data):
 
 # ---------------- GET URL ----------------
 def get_file_url(file_name):
-    data = supabase.storage.from_("notes").get_public_url(file_name)
-    return data["publicURL"]
+    return supabase.storage.from_("notes").get_public_url(file_name)

@@ -2,11 +2,19 @@
 import streamlit as st
 from pathlib import Path
 from utils.sidebar import show_sidebar
-from db import run_query, execute_query
+from datetime import datetime
+from db import run_query
+
+
+def format_timestamp(ts):
+    if isinstance(ts, str):
+        ts = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    return ts.strftime("%d %b %Y, %I:%M %p")
+
 
 # ------------------RUN SQL---------------------
-user = run_query("SELECT * FROM public.users WHERE user_id = 2")[0]
-notes = run_query("SELECT * FROM public.notes where user_id = 2")
+user = run_query("users", filters={"user_id": 2})[0]
+notes = run_query("notes", filters={"user_id": 2})
 
 username = user["username"]
 # ---------------- PAGE CONFIG ----------------
@@ -87,7 +95,7 @@ for note in notes:
     <div class='activity-item'>
         <span>📕{note["unit_name"]}_{note["original_name"]} uploaded</span>
         <small>
-            {note["uploaded_at"].strftime("%d %b %Y, %I:%M %p")}
+            {format_timestamp(note["uploaded_at"])}
         </small>
     </div>
     """

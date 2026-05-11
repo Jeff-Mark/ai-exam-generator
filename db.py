@@ -1,49 +1,56 @@
-from sqlalchemy import create_engine, text
+from supabase import create_client
 import os
+import streamlit as st
 
-try:
-    import streamlit as st
-    HAS_STREAMLIT = True
-except:
-    HAS_STREAMLIT = False
-
-
-# ---------------- LOAD DATABASE URL ----------------
-if HAS_STREAMLIT and "DATABASE_URL" in st.secrets:
-    DATABASE_URL = st.secrets["DATABASE_URL"]
+# -----------------------------
+# Load credentials (Streamlit Cloud + local support)
+# -----------------------------
+if "SUPABASE_URL" in st.secrets:
+    SUPABASE_URL = st.secrets["SUPABASE_URL"]
+    SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 else:
     from dotenv import load_dotenv
     load_dotenv()
-    DATABASE_URL = os.getenv("DATABASE_URL")
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL is not set")
-
-# ---------------- ENGINE ----------------
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,
-    pool_recycle=300,
-)
-
-# ---------------- CONNECTION ----------------
-
-
-def get_connection():
-    return engine.connect()
+# -----------------------------
+# Create Supabase client
+# -----------------------------
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ---------------- QUERY ----------------
 
 
-def run_query(query, params=None):
-    with get_connection() as conn:
-        result = conn.execute(text(query), params or {})
-        return result.mappings().all()
+def run_query(table, select="*", filters=None):
+    query = supabase.table(table).select(select)
+
+    if filters:
+        for key, value in filters.items():
+            query = query.eq(key, value)
+
+    return query.execute().data
 
 # ---------------- EXECUTE ----------------
 
 
-def execute_query(query, params=None):
-    with get_connection() as conn:
-        conn.execute(text(query), params or {})
-        conn.commit()
+def insert_data(table, data):
+    return supabase.table(table).insert(data).execute().data
+
+
+def update_data(table, filters, data):
+    query = supabase.table(table)
+
+    for key, value in filters.items():
+        query = query.eq(key, value)
+
+    return query.update(data).execute().data
+
+
+def delete_data(table, filters):
+    query = supabase.table(table)
+
+    for key, value in filters.items():
+        query = query.eq(key, value)
+
+    return query.delete().execute().data

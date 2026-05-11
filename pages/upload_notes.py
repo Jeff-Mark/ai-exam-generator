@@ -1,7 +1,7 @@
 import streamlit as st
 from utils.sidebar import show_sidebar
 from utils.styles import load_css
-from db import execute_query
+from db import insert_data
 from utils.text_processing import read_first_page, extract_unit_details
 from utils.uploadnotes import get_file_url, upload_file
 import uuid
@@ -44,36 +44,14 @@ if option == "Upload File":
 
             file_url = get_file_url(storage_name)
 
-            execute_query(
-                """
-                INSERT INTO notes
-                (
-                    user_id,
-                    original_name,
-                    file_name,
-                    file_path,
-                    unit_code,
-                    unit_name
-                )
-                VALUES
-                (
-                    :user_id,
-                    :original_name,
-                    :file_name,
-                    :file_path,
-                    :unit_code,
-                    :unit_name
-                )
-                """,
-                {
-                    "user_id": 2,
-                    "original_name": uploaded_file.name,
-                    "file_name": storage_name,
-                    "file_path": file_url,
-                    "unit_code": unit_code,
-                    "unit_name": unit_name
-                }
-            )
+            insert_data("notes", {
+                "user_id": 2,
+                "original_name": uploaded_file.name,
+                "file_name": storage_name,
+                "file_path": file_url,
+                "unit_code": unit_code,
+                "unit_name": unit_name
+            })
 
             st.success("Notes saved successfully!")
 
