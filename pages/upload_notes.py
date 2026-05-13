@@ -1,18 +1,53 @@
 import streamlit as st
 from utils.sidebar import show_sidebar
 from utils.styles import load_css
-from db import insert_data
+from db import insert_data, run_query
 from utils.text_processing import read_first_page, extract_unit_details
 from utils.uploadnotes import get_file_url, upload_file
 import uuid
 
-load_css()
+# ============================================
+# INIT SESSION
+# ============================================
 
+if "user" not in st.session_state:
+
+    st.session_state["user"] = None
+
+# ============================================
+# PROTECT PAGE
+# ============================================
+
+if st.session_state["user"] is None:
+
+    st.warning("Please login first.")
+
+    st.switch_page("app.py")
+
+# ============================================
+# USER DATA
+# ============================================
+
+user = st.session_state["user"]
+user_id = user["id"]
+
+load_css()
+# ---------------------------------------------------------------------
+API_URL = "https://abcd-12-34-56-78.ngrok-free.app/generate"
+
+notes = run_query("notes", filters={"user_id": user_id})
+
+selected_note = st.selectbox(
+    "Choose Notes",
+    notes,
+    format_func=lambda x: x["unit_name"]
+)
+# ---------------------------------------------------------------------
 st.set_page_config(layout="wide")
 show_sidebar()
 
 st.title("📄 Upload Notes")
-st.write("Upload your study materials to generate exam questions")
+st.write("Upload your study materials to generate exam questions ")
 
 option = st.radio("Choose Input Method", ["Upload File", "Paste Text"])
 
@@ -45,7 +80,7 @@ if option == "Upload File":
             file_url = get_file_url(storage_name)
 
             insert_data("notes", {
-                "user_id": 2,
+                "user_id": user_id,
                 "original_name": uploaded_file.name,
                 "file_name": storage_name,
                 "file_path": file_url,
@@ -59,4 +94,5 @@ if option == "Upload File":
 else:
     text = st.text_area("Paste Notes Here", height=300)
 
-st.button("Generate Questions")
+if st.button("Generate Questions"):
+    st.switch_page("pages/generate_questions.py")

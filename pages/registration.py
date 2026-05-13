@@ -1,58 +1,69 @@
 import streamlit as st
-from pathlib import Path
+import bcrypt
+
 from utils.sidebar import show_sidebar
 from utils.styles import load_css
-from db import execute_query
+from db import run_query, insert_data
 
 # ============================================
 # PAGE CONFIG
 # ============================================
+
 load_css()
 
-
-# ============================================
-# Create new user sql
-# ============================================
-
-def create_user(full_name, username, email, password):
-
-    query = """
-            INSERT INTO public.users(full_name, username, email, password_hash)
-            VALUES (:full_name, :username, :email, :password)
-            """
-
-    params = {
-        "full_name": full_name,
-        "username": username,
-        "email": email,
-        "password": password
-    }
-
-    execute_query(query, params)
-
-
-show_sidebar()
 st.set_page_config(
     page_title="Register",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# ============================================
-# HIDE DEFAULT STREAMLIT MENU
-# ============================================
-
-st.markdown("""
-<style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
-</style>
-""", unsafe_allow_html=True)
+show_sidebar()
 
 # ============================================
-# REGISTRATION PAGE
+# HIDE STREAMLIT DEFAULT UI
 # ============================================
+
+# st.markdown("""
+# <style>
+
+# #MainMenu {
+#     visibility: hidden;
+# }
+
+# footer {
+#     visibility: hidden;
+# }
+
+# header {
+#     visibility: hidden;
+# }
+
+# </style>
+# """, unsafe_allow_html=True)
+
+# ============================================
+# CHECK IF USER EXISTS
+# ============================================
+
+
+def user_exists(email, username):
+
+    users = run_query("users")
+
+    for user in users:
+
+        if user["email"] == email:
+            return "email"
+
+        if user["username"] == username:
+            return "username"
+
+    return None
+
+# ============================================
+# PAGE LAYOUT
+# ============================================
+
 
 left, right = st.columns([1.1, 1])
 
@@ -79,11 +90,21 @@ with left:
     </div>
     """, unsafe_allow_html=True)
 
-    full_name = st.text_input("Full Name")
+    # ============================================
+    # FORM
+    # ============================================
 
-    username = st.text_input("Username")
+    full_name = st.text_input(
+        "Full Name"
+    )
 
-    email = st.text_input("Email Address")
+    username = st.text_input(
+        "Username"
+    )
+
+    email = st.text_input(
+        "Email Address"
+    )
 
     password = st.text_input(
         "Password",
@@ -102,25 +123,111 @@ with left:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # ============================================
+    # CREATE ACCOUNT BUTTON
+    # ============================================
+
     if st.button("Create Account"):
 
-        if not full_name or not username or not email or not password:
-            st.error("Please fill in all fields.")
+        # ---------------- VALIDATION ----------------
+
+        if (
+            not full_name
+            or not username
+            or not email
+            or not password
+        ):
+
+            st.error(
+                "Please fill in all fields."
+            )
 
         elif password != confirm_password:
-            st.error("Passwords do not match.")
+
+            st.error(
+                "Passwords do not match."
+            )
 
         else:
-            st.success("Account created successfully!")
-            create_user(full_name, username, email, password)
-            # Add database insert here
-            # Example:
-            # save_user(full_name, username, email, password)
+
+            # ---------------- CHECK EXISTING USER ----------------
+
+            exists = user_exists(
+                email,
+                username
+            )
+
+            if exists == "email":
+
+                st.error(
+                    "Email already exists."
+                )
+
+            elif exists == "username":
+
+                st.error(
+                    "Username already exists."
+                )
+
+            else:
+
+                try:
+
+                    # ---------------- HASH PASSWORD ----------------
+
+                    hashed_password = bcrypt.hashpw(
+                        password.encode("utf-8"),
+                        bcrypt.gensalt()
+                    ).decode("utf-8")
+
+                    # ---------------- INSERT USER ----------------
+
+                    result = insert_data(
+                        "users",
+                        {
+                            "full_name": full_name,
+                            "username": username,
+                            "email": email,
+                            "password": hashed_password,
+                            "role": role
+                        }
+                    )
+
+                    # ---------------- SUCCESS ----------------
+
+                    if result:
+
+                        st.success(
+                            "Account created successfully!"
+                        )
+
+                        st.info(
+                            "You can now login."
+                        )
+
+                        # OPTIONAL REDIRECT
+                        # st.switch_page("pages/login.py")
+
+                    else:
+
+                        st.error(
+                            "Failed to create account."
+                        )
+
+                except Exception as e:
+
+                    st.error(
+                        f"Registration Error: {str(e)}"
+                    )
+
+    # ============================================
+    # LOGIN LINK
+    # ============================================
 
     st.markdown("""
     <div class='login-link'>
         Already have an account?
-        <a href="/login">Login</a>
+        <a href="./">Login</a>
     </div>
     """, unsafe_allow_html=True)
 

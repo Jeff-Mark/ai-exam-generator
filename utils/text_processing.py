@@ -44,7 +44,7 @@ def read_first_page(file):
 
 def extract_unit_details(text):
 
-    pattern = pattern = r'\b([A-Z]{2,5}\s\d{4})\s+(.+?)\s+LAST\s+REVISION'
+    pattern = pattern = r'([A-Z]{2,5}\s\d{4})[:\s]+([\s\S]+?)(?=\s+P\.?\s*O\.?|LAST\s+REVISION)'
 
     match = re.search(
         pattern,

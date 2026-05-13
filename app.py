@@ -1,135 +1,183 @@
-# https://ai-exam-generator-baufvky4fcevfrrzoatusc.streamlit.app/generated_questions
 import streamlit as st
-from pathlib import Path
+import bcrypt
+
 from utils.sidebar import show_sidebar
-from datetime import datetime
+from utils.styles import load_css
 from db import run_query
 
+# ============================================
+# CONFIG
+# ============================================
 
-def format_timestamp(ts):
-    if isinstance(ts, str):
-        ts = datetime.fromisoformat(ts.replace("Z", "+00:00"))
-    return ts.strftime("%d %b %Y, %I:%M %p")
+load_css()
 
-
-# ------------------RUN SQL---------------------
-user = run_query("users", filters={"user_id": 2})[0]
-notes = run_query("notes", filters={"user_id": 2})
-
-username = user["username"]
-# ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Dashboard",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="Login - AI Exam Generator",
+    layout="wide"
 )
 
-# ---------------- LOAD CSS ----------------
-css_path = Path(__file__).parent / "styles.css"
-
-with open(css_path) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-# ---------------- SIDEBAR ----------------
-
 show_sidebar()
-# ---------------- TOP BAR ----------------
-top1, top2 = st.columns([10, 2])
 
-with top1:
-    st.markdown("<div class='menu-icon'>☰</div>", unsafe_allow_html=True)
+# ============================================
+# INIT SESSION
+# ============================================
 
-with top2:
-    st.markdown(f"""
-    <div class='profile-section'>
-        🔔
-        <img src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'>
-        <span>{username}</span>
-    </div>
-    """, unsafe_allow_html=True)
+if "user" not in st.session_state:
 
-# ---------------- TITLE ----------------
-st.markdown("<h1 class='main-title'>Dashboard</h1>", unsafe_allow_html=True)
+    st.session_state["user"] = None
 
-st.markdown(f"""
-<p class='subtitle'>
-Welcome back, {username}! Here's what's happening with your exams.
-</p>
-""", unsafe_allow_html=True)
+# ============================================
+# PROTECT ROUTE
+# ============================================
 
-# ---------------- METRICS ----------------
-col1, col2, col3, col4 = st.columns(4)
+if st.session_state["user"] is not None:
 
-cards = [
-    ("📄", "12", "Notes Uploaded"),
-    ("🧠", "45", "Questions Generated"),
-    ("📝", "8", "Exams Created"),
-    ("⬇", "5", "Exams Downloaded")
-]
+    st.success(
+        f"Already logged in as "
+        f"{st.session_state['user']['email']}"
+    )
 
-cols = [col1, col2, col3, col4]
+    st.stop()
 
-for col, card in zip(cols, cards):
-    icon, number, text = card
+# ============================================
+# UI
+# ============================================
 
-    with col:
-        st.markdown(f"""
-        <div class='metric-card'>
-            <div class='metric-icon'>{icon}</div>
-            <div>
-                <h2>{number}</h2>
-                <p>{text}</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+left_col, right_col = st.columns([1.2, 1])
 
-# ---------------- MAIN SECTION ----------------
-left, right = st.columns([1.1, 1])
+# ============================================
+# LEFT SIDE
+# ============================================
 
-# -------- RECENT ACTIVITIES --------
-activity_html = ""
+with left_col:
 
-for note in notes:
+    st.markdown("# Welcome Back!")
 
-    activity_html += f"""
-    <div class='activity-item'>
-        <span>📕{note["unit_name"]}_{note["original_name"]} uploaded</span>
-        <small>
-            {format_timestamp(note["uploaded_at"])}
-        </small>
-    </div>
-    """
-with left:
+    st.write(
+        "Login to your account to continue"
+    )
 
-    st.markdown(f"""
-    <div class='activity-card'>
+    st.image(
+        "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
+        width=350
+    )
 
-    <div class='activity-header'>
-    <h3>Recent Activity</h3>
-    <button>View All</button>
-    </div>
+# ============================================
+# RIGHT SIDE
+# ============================================
 
-    {activity_html}
+with right_col:
 
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("## Login")
 
-# -------- QUICK START --------
-with right:
-    st.markdown("""
-    <div class='quick-card'>
-    <div class='quick-content'>
-    <h2>Quick Start</h2>
-    <p>
-    Upload your notes and generate
-    exam questions instantly.
-    </p>
+    email = st.text_input(
+        "Email",
+        placeholder="Enter your email"
+    )
 
-    <button>⬆ Upload Notes</button>
-    </div>
+    password = st.text_input(
+        "Password",
+        type="password",
+        placeholder="Enter your password"
+    )
 
-    <div class='quick-image'>
-    <img src='https://cdn-icons-png.flaticon.com/512/3767/3767084.png'>
-    </div>
-    </div>
-    """, unsafe_allow_html=True)
+    remember = st.checkbox(
+        "Remember me"
+    )
+
+    st.markdown(
+        "<br>",
+        unsafe_allow_html=True
+    )
+
+    # ============================================
+    # BUTTONS
+    # ============================================
+
+    log_col, reg_col = st.columns([1, 1])
+
+    # ============================================
+    # LOGIN BUTTON
+    # ============================================
+
+    with log_col:
+
+        if st.button("Login"):
+
+            if not email or not password:
+
+                st.error(
+                    "Please enter email and password"
+                )
+
+            else:
+
+                users = run_query(
+                    "users",
+                    filters={
+                        "email": email
+                    }
+                )
+
+                # ---------------- USER EXISTS ----------------
+
+                if users and len(users) > 0:
+
+                    user = users[0]
+
+                    stored_hash = user.get(
+                        "password"
+                    )
+
+                    # ---------------- VERIFY PASSWORD ----------------
+
+                    if (
+                        stored_hash
+                        and bcrypt.checkpw(
+                            password.encode("utf-8"),
+                            stored_hash.encode("utf-8")
+                        )
+                    ):
+
+                        # SAVE USER SESSION
+                        st.session_state["user"] = {
+                            "id": user["user_id"],
+                            "email": user["email"],
+                            "name": user.get(
+                                "full_name",
+                                ""
+                            )
+                        }
+
+                        st.success(
+                            "Login successful!"
+                        )
+
+                        # REDIRECT TO DASHBOARD
+                        st.switch_page(
+                            "pages/dashboard.py"
+                        )
+
+                    else:
+
+                        st.error(
+                            "Invalid password"
+                        )
+
+                else:
+
+                    st.error(
+                        "User not found"
+                    )
+
+    # ============================================
+    # REGISTER BUTTON
+    # ============================================
+
+    with reg_col:
+
+        if st.button("Create Account"):
+
+            st.switch_page(
+                "pages/registration.py"
+            )

@@ -39,18 +39,21 @@ def insert_data(table, data):
 
 
 def update_data(table, filters, data):
-    query = supabase.table(table)
+
+    query = supabase.table(table).update(data)
 
     for key, value in filters.items():
         query = query.eq(key, value)
 
-    return query.update(data).execute().data
+    return query.execute().data
 
 
 def delete_data(table, filters):
-    query = supabase.table(table)
+
+    query = supabase.table(table).delete()
 
     for key, value in filters.items():
+
         query = query.eq(key, value)
 
-    return query.delete().execute().data
+    return query.execute().data

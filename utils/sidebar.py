@@ -10,7 +10,7 @@ def show_sidebar():
     </div>
     """, unsafe_allow_html=True)
 
-    st.sidebar.page_link("app.py", label="🏠 Dashboard")
+    st.sidebar.page_link("pages/dashboard.py", label="🏠 Dashboard")
     st.sidebar.page_link("pages/upload_notes.py", label="⬆ Upload Notes")
     st.sidebar.page_link(
         "pages/generated_questions.py",
@@ -21,11 +21,15 @@ def show_sidebar():
         label="📝 Exam Paper"
     )
     st.sidebar.page_link(
+        "pages/generate_questions.py",
+        label="📝 Generate Questions"
+    )
+    st.sidebar.page_link(
         "pages/exam_settings.py",
         label="⚙ Exam Settings"
     )
     st.sidebar.page_link(
-        "pages/login.py",
+        "app.py",
         label="🚪 Logout"
     )
     st.sidebar.page_link(
