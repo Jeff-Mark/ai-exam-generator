@@ -100,6 +100,7 @@ for note in notes:
     </small>
     </div>
     """
+st.markdown(activity_html, unsafe_allow_html=True)
 with left:
 
     st.markdown(f"""
