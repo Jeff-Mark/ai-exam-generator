@@ -6,6 +6,10 @@ from datetime import datetime
 from utils.styles import load_css
 from db import run_query
 
+if "user" not in st.session_state:
+    st.switch_page("app.py")
+    st.stop()
+
 user = st.session_state["user"]
 user_id = user["id"]
 
@@ -100,7 +104,7 @@ for note in notes:
     </small>
     </div>
     """
-st.markdown(activity_html, unsafe_allow_html=True)
+
 with left:
 
     st.markdown(f"""
