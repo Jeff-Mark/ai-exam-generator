@@ -43,9 +43,9 @@ with top1:
 with top2:
     st.markdown(f"""
     <div class='profile-section'>
-        🔔
-        <img src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'>
-        <span>{username}</span>
+    🔔
+    <img src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'>
+    <span>{username}</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -76,11 +76,11 @@ for col, card in zip(cols, cards):
     with col:
         st.markdown(f"""
         <div class='metric-card'>
-            <div class='metric-icon'>{icon}</div>
-            <div>
-                <h2>{number}</h2>
-                <p>{text}</p>
-            </div>
+        <div class='metric-icon'>{icon}</div>
+        <div>
+        <h2>{number}</h2>
+        <p>{text}</p>
+        </div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -94,10 +94,10 @@ for note in notes:
 
     activity_html += f"""
     <div class='activity-item'>
-        <span>📕{note["unit_name"]}_{note["original_name"]} uploaded</span>
-        <small>
-            {format_timestamp(note["uploaded_at"])}
-        </small>
+    <span>📕{note["unit_name"]}_{note["original_name"]} uploaded</span>
+    <small>
+    {format_timestamp(note["uploaded_at"])}
+    </small>
     </div>
     """
 with left:
