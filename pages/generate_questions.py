@@ -37,14 +37,14 @@ st.title("📄 Upload Notes & Generate Questions")
 # ---------------- LOAD NOTES ----------------
 notes = run_query(
     "notes",
-    filters={"user_id": user_id}
+    filters={"user_id": user_id, }
 )
 
 # ---------------- SELECT NOTE ----------------
 selected_note = st.selectbox(
     "Choose Notes",
     notes,
-    format_func=lambda x: x["unit_name"]
+    format_func=lambda x: x["original_name"]
 )
 
 # ---------------- CLEAR OLD RESULT IF NOTE CHANGES ----------------
@@ -139,18 +139,24 @@ if "result" in st.session_state:
     )
 
     # ---------------- UNIT DETAILS ----------------
+    # ---------------- UNIT DETAILS ----------------
     st.markdown("### 📘 Unit Details")
 
-    unit = data.get("unit", {})
+    # GET DIRECTLY FROM NOTES TABLE
+    unit_code = selected_note.get("unit_code", "")
+    unit_name = selected_note.get("unit_name", "")
 
-    unit_code = st.text_input(
+    # DISPLAY ONLY
+    st.text_input(
         "Unit Code",
-        value=unit.get("unit_code", "")
+        value=unit_code,
+        disabled=True
     )
 
-    unit_name = st.text_input(
+    st.text_input(
         "Unit Name",
-        value=unit.get("unit_name", "")
+        value=unit_name,
+        disabled=True
     )
 
     updated_topics = []

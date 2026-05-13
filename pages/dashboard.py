@@ -6,10 +6,6 @@ from datetime import datetime
 from utils.styles import load_css
 from db import run_query
 
-if "user" not in st.session_state:
-    st.switch_page("app.py")
-    st.stop()
-
 user = st.session_state["user"]
 user_id = user["id"]
 
@@ -91,17 +87,17 @@ for col, card in zip(cols, cards):
 # ---------------- MAIN SECTION ----------------
 left, right = st.columns([1.1, 1])
 
-# -------- RECENT ACTIVITIES --------
+# ---------------- RECENT ACTIVITIES ----------------
 activity_html = ""
 
 for note in notes:
 
     activity_html += f"""
     <div class='activity-item'>
-    <span>📕{note["unit_name"]}_{note["original_name"]} uploaded</span>
-    <small>
-    {format_timestamp(note["uploaded_at"])}
-    </small>
+        <span>📕 {note["original_name"]} uploaded</span>
+        <small>
+            {format_timestamp(note["uploaded_at"])}
+        </small>
     </div>
     """
 
