@@ -68,172 +68,152 @@ st.write(
     "Upload your study materials to generate exam questions"
 )
 
-# ============================================
-# INPUT METHOD
-# ============================================
-
-option = st.radio(
-    "Choose Input Method",
-    ["Upload Files", "Paste Text"]
-)
 
 # ============================================
 # MULTIPLE FILE UPLOAD
 # ============================================
 
-if option == "Upload Files":
 
-    uploaded_files = st.file_uploader(
-        "Upload PDF/DOCX/TXT Files",
-        type=["pdf", "docx", "txt"],
-        accept_multiple_files=True
+uploaded_files = st.file_uploader(
+    "Upload PDF/DOCX/TXT Files",
+    type=["pdf", "docx", "txt"],
+    accept_multiple_files=True
+)
+
+# ----------------------------------------
+# FILE PREVIEW
+# ----------------------------------------
+
+if uploaded_files:
+
+    st.success(
+        f"{len(uploaded_files)} file(s) selected"
     )
 
+    processed_files = []
+
+    for uploaded_file in uploaded_files:
+
+        try:
+
+            # READ FIRST PAGE
+            first_page_text = read_first_page(
+                uploaded_file
+            )
+
+            # EXTRACT UNIT DETAILS
+            result = extract_unit_details(
+                first_page_text
+            )
+
+            unit_code = result.get(
+                "unit_code",
+                "UNKNOWN"
+            )
+
+            unit_name = result.get(
+                "unit_name",
+                "Unknown Unit"
+            )
+
+            processed_files.append({
+                "file": uploaded_file,
+                "unit_code": unit_code,
+                "unit_name": unit_name
+            })
+
+            # DISPLAY PREVIEW
+            st.markdown("---")
+
+            st.markdown(
+                f"### 📘 {uploaded_file.name}"
+            )
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.write(
+                    f"**Unit Code:** {unit_code}"
+                )
+
+            with col2:
+                st.write(
+                    f"**Unit Name:** {unit_name}"
+                )
+
+        except Exception as e:
+
+            st.error(
+                f"Error processing "
+                f"{uploaded_file.name}: {str(e)}"
+            )
+
     # ----------------------------------------
-    # FILE PREVIEW
+    # SAVE ALL FILES
     # ----------------------------------------
 
-    if uploaded_files:
+    if st.button("💾 Save All Notes"):
 
-        st.success(
-            f"{len(uploaded_files)} file(s) selected"
-        )
+        saved_count = 0
 
-        processed_files = []
-
-        for uploaded_file in uploaded_files:
+        for item in processed_files:
 
             try:
 
-                # READ FIRST PAGE
-                first_page_text = read_first_page(
-                    uploaded_file
+                uploaded_file = item["file"]
+
+                unit_code = item["unit_code"]
+
+                unit_name = item["unit_name"]
+
+                # UNIQUE STORAGE NAME
+                storage_name = (
+                    f"{unit_code}_"
+                    f"{uuid.uuid4()}_"
+                    f"{uploaded_file.name}"
                 )
 
-                # EXTRACT UNIT DETAILS
-                result = extract_unit_details(
-                    first_page_text
+                original_name = (
+                    f"{unit_name}_"
+                    f"{uploaded_file.name}"
                 )
 
-                unit_code = result.get(
-                    "unit_code",
-                    "UNKNOWN"
+                # UPLOAD TO STORAGE
+                upload_file(
+                    storage_name,
+                    uploaded_file.getvalue()
                 )
 
-                unit_name = result.get(
-                    "unit_name",
-                    "Unknown Unit"
+                # GET FILE URL
+                file_url = get_file_url(
+                    storage_name
                 )
 
-                processed_files.append({
-                    "file": uploaded_file,
-                    "unit_code": unit_code,
-                    "unit_name": unit_name
-                })
-
-                # DISPLAY PREVIEW
-                st.markdown("---")
-
-                st.markdown(
-                    f"### 📘 {uploaded_file.name}"
+                # SAVE TO DATABASE
+                insert_data(
+                    "notes",
+                    {
+                        "user_id": user_id,
+                        "original_name": original_name,
+                        "file_name": storage_name,
+                        "file_path": file_url,
+                        "unit_code": unit_code,
+                        "unit_name": unit_name
+                    }
                 )
 
-                col1, col2 = st.columns(2)
-
-                with col1:
-                    st.write(
-                        f"**Unit Code:** {unit_code}"
-                    )
-
-                with col2:
-                    st.write(
-                        f"**Unit Name:** {unit_name}"
-                    )
+                saved_count += 1
 
             except Exception as e:
 
                 st.error(
-                    f"Error processing "
+                    f"Failed saving "
                     f"{uploaded_file.name}: {str(e)}"
                 )
 
-        # ----------------------------------------
-        # SAVE ALL FILES
-        # ----------------------------------------
-
-        if st.button("💾 Save All Notes"):
-
-            saved_count = 0
-
-            for item in processed_files:
-
-                try:
-
-                    uploaded_file = item["file"]
-
-                    unit_code = item["unit_code"]
-
-                    unit_name = item["unit_name"]
-
-                    # UNIQUE STORAGE NAME
-                    storage_name = (
-                        f"{unit_code}_"
-                        f"{uuid.uuid4()}_"
-                        f"{uploaded_file.name}"
-                    )
-
-                    original_name = (
-                        f"{unit_name}_"
-                        f"{uploaded_file.name}"
-                    )
-
-                    # UPLOAD TO STORAGE
-                    upload_file(
-                        storage_name,
-                        uploaded_file.getvalue()
-                    )
-
-                    # GET FILE URL
-                    file_url = get_file_url(
-                        storage_name
-                    )
-
-                    # SAVE TO DATABASE
-                    insert_data(
-                        "notes",
-                        {
-                            "user_id": user_id,
-                            "original_name": original_name,
-                            "file_name": storage_name,
-                            "file_path": file_url,
-                            "unit_code": unit_code,
-                            "unit_name": unit_name
-                        }
-                    )
-
-                    saved_count += 1
-
-                except Exception as e:
-
-                    st.error(
-                        f"Failed saving "
-                        f"{uploaded_file.name}: {str(e)}"
-                    )
-
-            st.success(
-                f"{saved_count} note(s) saved successfully!"
-            )
-
-# ============================================
-# PASTE TEXT OPTION
-# ============================================
-
-else:
-
-    text = st.text_area(
-        "Paste Notes Here",
-        height=300
-    )
+        st.success(
+            f"{saved_count} note(s) saved successfully!"
+        )
 
 # ============================================
 # GENERATE QUESTIONS

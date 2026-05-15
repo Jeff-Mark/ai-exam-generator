@@ -10,6 +10,7 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import letter
 from io import BytesIO
+from db import insert_data
 
 # =====================================================
 # CONFIG
@@ -47,9 +48,23 @@ exam_text = st.session_state[
     "generated_exam"
 ]
 
+metadata = st.session_state.get(
+    "exam_metadata",
+    {}
+)
+
+user = st.session_state["user"]
+
+user_id = user["id"]
+
 # =====================================================
 # EDITABLE TEXT AREA
 # =====================================================
+
+exam_title = st.text_input(
+    "Exam Title",
+    value=f"{metadata.get('unit_name', '')} Exam"
+)
 
 edited_exam = st.text_area(
     "Edit Exam Paper",
@@ -115,6 +130,55 @@ with col1:
     pdf_file = generate_pdf(
         edited_exam
     )
+
+    if st.button(
+        "💾 Save Exam",
+        key="save_exam_btn"
+    ):
+
+        try:
+
+            insert_data(
+                "exams_paper",
+                {
+
+                    "user_id": user_id,
+
+                    "unit_name":
+                        metadata.get(
+                            "unit_name",
+                            ""
+                        ),
+
+                    "exam_title":
+                        exam_title,
+
+                    "duration":
+                        metadata.get(
+                            "duration",
+                            1
+                        ),
+
+                    "difficulty":
+                        metadata.get(
+                            "difficulty",
+                            "Medium"
+                        ),
+
+                    "exam_content":
+                        edited_exam
+                }
+            )
+
+            st.success(
+                "Exam saved successfully!"
+            )
+
+        except Exception as e:
+
+            st.error(
+                f"Database Error: {str(e)}"
+            )
 
     st.download_button(
 

@@ -88,9 +88,20 @@ for col, card in zip(cols, cards):
 left, right = st.columns([1.1, 1])
 
 # ---------------- RECENT ACTIVITIES ----------------
+
+if "show_all_activity" not in st.session_state:
+    st.session_state.show_all_activity = False
+
+
+display_notes = (
+    notes
+    if st.session_state.show_all_activity
+    else notes[:3]
+)
+
 activity_html = ""
 
-for note in notes:
+for note in display_notes:
 
     activity_html += f"""
     <div class='activity-item'>
@@ -101,18 +112,37 @@ for note in notes:
     </div>
     """
 
+
 with left:
 
+    # Header row
+    col1, col2 = st.columns([4, 1])
+
+    with col1:
+        st.markdown("### Recent Activity")
+
+    with col2:
+
+        if len(notes) > 3:
+
+            button_text = (
+                "View Less"
+                if st.session_state.show_all_activity
+                else "View All"
+            )
+
+            if st.button(button_text):
+
+                st.session_state.show_all_activity = (
+                    not st.session_state.show_all_activity
+                )
+
+                st.rerun()
+
+    # Activity Card
     st.markdown(f"""
     <div class='activity-card'>
-
-    <div class='activity-header'>
-    <h3>Recent Activity</h3>
-    <button>View All</button>
-    </div>
-
-    {activity_html}
-
+        {activity_html}
     </div>
     """, unsafe_allow_html=True)
 

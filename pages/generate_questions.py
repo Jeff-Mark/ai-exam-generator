@@ -2,6 +2,7 @@ import streamlit as st
 from utils.sidebar import show_sidebar
 from utils.styles import load_css
 from db import run_query, insert_data, delete_data
+from utils.exam_generator import remove_duplicate_questions
 import requests
 import json
 import urllib3
@@ -94,6 +95,9 @@ if st.button("Generate Questions"):
             if response.status_code == 200:
 
                 data = response.json()
+
+                # REMOVE DUPLICATES
+                data = remove_duplicate_questions(data)
 
                 st.success(
                     "Questions generated!"

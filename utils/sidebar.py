@@ -16,10 +16,7 @@ def show_sidebar():
         "pages/generated_questions.py",
         label="📄 Generated Questions"
     )
-    st.sidebar.page_link(
-        "pages/exam_preview.py",
-        label="📝 Exam Paper"
-    )
+
     st.sidebar.page_link(
         "pages/generate_questions.py",
         label="📝 Generate Questions"
@@ -29,10 +26,21 @@ def show_sidebar():
         label="⚙ Exam Settings"
     )
     st.sidebar.page_link(
-        "app.py",
-        label="🚪 Logout"
+        "pages/exam_preview.py",
+        label="📝 Exam Paper"
+    )
+    st.sidebar.page_link(
+        "pages/saved_exam.py",
+        label="📝 Saved Exam Papers"
     )
     st.sidebar.page_link(
         "pages/registration.py",
         label="🚪 Registration"
     )
+    if st.sidebar.button("🚪 Logout"):
+
+        # Clear session data
+        st.session_state.clear()
+
+        # Redirect to login/home page
+        st.switch_page("app.py")

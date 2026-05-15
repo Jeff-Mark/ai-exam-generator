@@ -1,9 +1,10 @@
 import random
-
+import re
 
 # =====================================================
 # FILTER QUESTIONS
 # =====================================================
+
 
 def filter_questions(
     questions,
@@ -182,3 +183,102 @@ def generate_exam(
         })
 
     return exam
+
+
+# =====================================================
+# NORMALIZE QUESTION
+# =====================================================
+
+def normalize_question(text):
+
+    if not text:
+        return ""
+
+    # LOWERCASE
+    text = text.lower()
+
+    # REMOVE PUNCTUATION
+    text = re.sub(
+        r"[^\w\s]",
+        "",
+        text
+    )
+
+    # REMOVE EXTRA SPACES
+    text = re.sub(
+        r"\s+",
+        " ",
+        text
+    ).strip()
+
+    return text
+
+
+# =====================================================
+# REMOVE DUPLICATE QUESTIONS
+# =====================================================
+
+def remove_duplicate_questions(data):
+
+    seen = set()
+
+    cleaned_topics = []
+
+    for topic in data.get("topics", []):
+
+        updated_topic = {
+            "topic": topic.get("topic", ""),
+            "questions": []
+        }
+
+        # ---------------- QUESTIONS ----------------
+        if "questions" in topic:
+
+            for q in topic["questions"]:
+
+                # HANDLE STRING QUESTIONS
+                if isinstance(q, str):
+
+                    question_text = q
+
+                    normalized = normalize_question(
+                        question_text
+                    )
+
+                    if normalized in seen:
+                        continue
+
+                    seen.add(normalized)
+
+                    updated_topic[
+                        "questions"
+                    ].append(q)
+
+                # HANDLE OBJECT QUESTIONS
+                else:
+
+                    question_text = q.get(
+                        "question",
+                        ""
+                    )
+
+                    normalized = normalize_question(
+                        question_text
+                    )
+
+                    if normalized in seen:
+                        continue
+
+                    seen.add(normalized)
+
+                    updated_topic[
+                        "questions"
+                    ].append(q)
+
+        cleaned_topics.append(
+            updated_topic
+        )
+
+    data["topics"] = cleaned_topics
+
+    return data

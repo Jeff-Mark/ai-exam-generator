@@ -328,6 +328,14 @@ if st.button(
 
     # SAVE TO SESSION
     st.session_state["generated_exam"] = exam_text
+    st.session_state["exam_metadata"] = {
+
+        "unit_name": selected_unit,
+
+        "duration": duration,
+
+        "difficulty": difficulty
+    }
 
     # GO TO PREVIEW PAGE
     st.switch_page(
