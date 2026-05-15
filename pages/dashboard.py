@@ -20,7 +20,37 @@ def format_timestamp(ts):
 user = run_query("users", filters={"user_id": user_id})[0]
 notes = run_query("notes", filters={"user_id": user_id})
 
+questions = run_query("generatedquestions")
+
+saved_exams = run_query("exams_paper", filters={"user_id": user_id})
+
 username = user["username"]
+
+# --------------------COUNTS--------------------------
+
+notes_count = len(notes)
+
+questions_count = len(questions)
+
+exams_count = len(saved_exams)
+
+# --------------------CARDS----------------
+
+cards = [
+
+    (
+        "📄",
+        str(notes_count),
+        "Notes Uploaded"
+    ),
+
+    (
+        "📝",
+        str(exams_count),
+        "Saved Exams"
+    )
+]
+
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
     page_title="Dashboard",
@@ -59,31 +89,28 @@ Welcome back, {username}! Here's what's happening with your exams.
 """, unsafe_allow_html=True)
 
 # ---------------- METRICS ----------------
-col1, col2, col3, col4 = st.columns(4)
-
-cards = [
-    ("📄", "12", "Notes Uploaded"),
-    ("🧠", "45", "Questions Generated"),
-    ("📝", "8", "Exams Created"),
-    ("⬇", "5", "Exams Downloaded")
-]
-
-cols = [col1, col2, col3, col4]
+cols = st.columns(len(cards))
 
 for col, card in zip(cols, cards):
+
     icon, number, text = card
 
     with col:
+
         st.markdown(f"""
         <div class='metric-card'>
-        <div class='metric-icon'>{icon}</div>
+
+        <div class='metric-icon'>
+        {icon}
+        </div>
+
         <div>
         <h2>{number}</h2>
         <p>{text}</p>
         </div>
+
         </div>
         """, unsafe_allow_html=True)
-
 # ---------------- MAIN SECTION ----------------
 left, right = st.columns([1.1, 1])
 
