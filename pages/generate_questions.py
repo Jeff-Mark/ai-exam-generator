@@ -7,6 +7,14 @@ import requests
 import json
 import urllib3
 
+if st.session_state["user"] is None:
+
+    st.warning("Please login first.")
+
+    st.switch_page("app.py")
+
+    st.stop()
+
 user = st.session_state["user"]
 user_id = user["id"]
 

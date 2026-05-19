@@ -6,9 +6,6 @@ from datetime import datetime
 from utils.styles import load_css
 from db import run_query
 
-user = st.session_state["user"]
-user_id = user["id"]
-
 if st.session_state["user"] is None:
 
     st.warning("Please login first.")
@@ -16,6 +13,11 @@ if st.session_state["user"] is None:
     st.switch_page("app.py")
 
     st.stop()
+
+user = st.session_state["user"]
+user_id = user["id"]
+
+
 
 
 def format_timestamp(ts):

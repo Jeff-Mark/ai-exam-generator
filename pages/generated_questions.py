@@ -6,12 +6,14 @@ from db import run_query, update_data, delete_data
 # ==========================================================
 # SESSION CHECK
 # ==========================================================
-if "user" not in st.session_state:
+if st.session_state["user"] is None:
 
-    st.error("Please log in first")
+    st.warning("Please login first.")
+
+    st.switch_page("app.py")
 
     st.stop()
-
+    
 user = st.session_state["user"]
 
 user_id = user["id"]
