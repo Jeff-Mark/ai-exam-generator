@@ -68,7 +68,7 @@ show_sidebar()
 top1, top2 = st.columns([10, 2])
 
 with top1:
-    st.markdown("<div class='menu-icon'>☰</div>", unsafe_allow_html=True)
+    st.markdown("<div class='menu-icon'></div>", unsafe_allow_html=True)
 
 with top2:
     st.markdown(f"""
