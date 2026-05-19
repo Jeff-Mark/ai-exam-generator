@@ -13,8 +13,12 @@ from reportlab.lib.pagesizes import letter
 # SESSION CHECK
 # =====================================================
 
-if "user" not in st.session_state:
-    st.error("Please login first")
+if st.session_state["user"] is None:
+
+    st.warning("Please login first.")
+
+    st.switch_page("app.py")
+
     st.stop()
 
 user    = st.session_state["user"]

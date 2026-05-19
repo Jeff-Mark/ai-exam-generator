@@ -10,12 +10,14 @@ load_css()
 show_sidebar()
 st.title("⚙️ Exam Settings")
 
+user    = st.session_state["user"]
+user_id = user["id"]
+
 if "user" not in st.session_state:
     st.error("Please log in first")
     st.stop()
 
-user    = st.session_state["user"]
-user_id = user["id"]
+
 
 # ── Basic settings ────────────────────────────────────────────
 col1, col2 = st.columns(2)
@@ -210,7 +212,6 @@ if st.button("🧠 Generate Exam", key="generate_exam_btn"):
     }
 
     st.success(f"✅ Exam generated for {selected_unit}")
-    # st.switch_page("pages/exam_preview.py")
+    st.switch_page("pages/exam_preview.py")
 
-    st.write(exam_text)
-    st.write(marking_scheme)
+    

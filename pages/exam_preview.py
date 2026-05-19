@@ -25,6 +25,13 @@ show_sidebar()
 # =====================================================
 # SESSION CHECK
 # =====================================================
+if st.session_state["user"] is None:
+
+    st.warning("Please login first.")
+
+    st.switch_page("app.py")
+
+    st.stop()
 
 if "generated_exam" not in st.session_state:
 
@@ -33,6 +40,7 @@ if "generated_exam" not in st.session_state:
     )
 
     st.stop()
+
 
 # =====================================================
 # PAGE TITLE
@@ -48,7 +56,6 @@ exam_text = st.session_state.get(
     "generated_exam",
     ""
 )
-st.write(exam_text)
 marking_scheme = st.session_state.get(
     "generated_marking_scheme",
     ""

@@ -9,6 +9,14 @@ from db import run_query
 user = st.session_state["user"]
 user_id = user["id"]
 
+if st.session_state["user"] is None:
+
+    st.warning("Please login first.")
+
+    st.switch_page("app.py")
+
+    st.stop()
+
 
 def format_timestamp(ts):
     if isinstance(ts, str):

@@ -12,14 +12,15 @@ def show_sidebar():
 
     st.sidebar.page_link("pages/dashboard.py", label="🏠 Dashboard")
     st.sidebar.page_link("pages/upload_notes.py", label="⬆ Upload Notes")
-    st.sidebar.page_link(
-        "pages/generated_questions.py",
-        label="📄 Generated Questions"
-    )
+    
 
     st.sidebar.page_link(
         "pages/generate_questions.py",
         label="📝 Generate Questions"
+    )
+    st.sidebar.page_link(
+        "pages/generated_questions.py",
+        label="📄 Generated Questions"
     )
     st.sidebar.page_link(
         "pages/exam_settings.py",
@@ -33,10 +34,7 @@ def show_sidebar():
         "pages/saved_exam.py",
         label="📝 Saved Exam Papers"
     )
-    st.sidebar.page_link(
-        "pages/registration.py",
-        label="🚪 Registration"
-    )
+    
     if st.sidebar.button("🚪 Logout"):
 
         # Clear session data
